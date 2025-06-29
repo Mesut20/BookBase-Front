@@ -1,0 +1,35 @@
+# Authenticate to get a new token (if needed)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+# Get all books
+GET http://localhost:5000/api/books
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzUxMTk0NjY3LCJleHAiOjE3NTExOTgyNjcsImlhdCI6MTc1MTE5NDY2NywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.5H2frmpFOfJsxV7oxtdNG2yDZUmnaNNXs0EKUWoKieg
+
+###
+
+# Create a new book
+POST http://localhost:5000/api/books
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzUxMTk0NjY3LCJleHAiOjE3NTExOTgyNjcsImlhdCI6MTc1MTE5NDY2NywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.5H2frmpFOfJsxV7oxtdNG2yDZUmnaNNXs0EKUWoKieg
+
+{
+  "title": "Ny Testbok",
+  "author": "Ny Författare",
+  "publicationDate": "2025-01-01"
+}
+
+###
+
+# Get book with id: 11
+GET http://localhost:5000/api/books/11
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwgbmJmIjoxNzUxMTk0NjY3LCJleHAiOjE3NTExOTgyNjcsImlhdCI6MTc1MTE5NDY2NywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.5H2frmpFOfJsxV7oxtdNG2yDZUmnaNNXs0EKUWoKieg
