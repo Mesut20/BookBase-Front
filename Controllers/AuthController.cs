@@ -21,13 +21,11 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public IActionResult Login([FromBody] UserLogin login)
     {
-        // Hard-coded validation for demo purposes
-        if (login.Username == "testuser" && login.Password == "password123")
+        if (login?.Username == "testuser" && login?.Password == "password123")
         {
             var token = GenerateJwtToken(login.Username);
             return Ok(new { token });
         }
-
         return Unauthorized();
     }
 
@@ -38,15 +36,15 @@ public class AuthController : ControllerBase
         {
             throw new InvalidOperationException("Jwt:Key is not configured in appsettings.json");
         }
-        var keyBytes = Encoding.ASCII.GetBytes(key);
+        var keyBytes = Encoding.UTF8.GetBytes(key);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, username)
             }),
-            Expires = DateTime.UtcNow.AddHours(1),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature),
+            Expires = DateTime.UtcNow.AddHours(24), // Öka till 24 timmar för att matcha din nya token
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256),
             Issuer = _configuration["Jwt:Issuer"],
             Audience = _configuration["Jwt:Audience"]
         };

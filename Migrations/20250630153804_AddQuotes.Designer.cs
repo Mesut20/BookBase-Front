@@ -3,6 +3,7 @@ using System;
 using BookBase.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookBase.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250630153804_AddQuotes")]
+    partial class AddQuotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.17");
@@ -52,7 +55,7 @@ namespace BookBase.Migrations
                     b.Property<int?>("BookId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("QuoteText")
+                    b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

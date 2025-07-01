@@ -1,6 +1,8 @@
 bin/
 obj/
 *.db
+*.db-wal
+*.db-shm
 *.exe
 *.pdb
 *.dll
