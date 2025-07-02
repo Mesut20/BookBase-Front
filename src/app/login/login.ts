@@ -20,14 +20,21 @@ export class LoginComponent {
 
   onSubmit() {
     const credentials = { username: this.username, password: this.password };
-    this.http.post('http://localhost:5000/api/auth/login', credentials, { responseType: 'text' })
+    this.http.post('http://localhost:5000/api/auth/login', credentials)
       .subscribe({
-        next: (token: string) => {
-          localStorage.setItem('token', token);
-          this.router.navigate(['/books']);
+        next: (response: any) => {
+          console.log('Server response:', response);
+          const token = response.token; // Extrahera token från JSON
+          if (token && token.startsWith('ey')) {
+            localStorage.setItem('token', token);
+            this.router.navigate(['/books']);
+          } else {
+            this.errorMessage = 'Ogiltig token från server';
+          }
         },
         error: (err) => {
           this.errorMessage = 'Inloggning misslyckades';
+          console.error('Error:', err);
         }
       });
   }
