@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login'; // Importera högst upp
+import { LoginComponent } from './login/login';
+import { BookListComponent } from './book-list/book-list'; // Uppdatera import
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' } // Ta bort '/books'-rutan temporärt
+  { path: 'books', component: BookListComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
