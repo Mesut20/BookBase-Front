@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { LoginComponent } from './login/login';
+import { RouterModule } from '@angular/router'; // Importera RouterModule
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [LoginComponent],
+  imports: [RouterModule], // Använd RouterModule för routning
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

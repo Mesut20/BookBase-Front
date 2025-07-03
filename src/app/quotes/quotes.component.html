@@ -1,0 +1,11 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Mina citat</h2>
+  <div *ngIf="quotes.length === 0" class="alert alert-info">
+    Inga citat hittades. Lägg till ett nytt citat!
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item" *ngFor="let quote of quotes">
+      {{ quote.quoteText }} (Author: {{ quote.author }}, Book ID: {{ quote.bookId }})
+    </li>
+  </ul>
+</div>

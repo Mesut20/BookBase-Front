@@ -1,0 +1,10 @@
+/* Lägg till grundläggande styling för att matcha Bootstrap */
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alert-info {
+  margin-bottom: 1rem;
+}
