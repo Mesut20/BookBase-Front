@@ -21,7 +21,12 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public IActionResult Login([FromBody] UserLogin login)
     {
-        if (login?.Username == "testuser" && login?.Password == "password123")
+        if (login == null || string.IsNullOrWhiteSpace(login.Username) || string.IsNullOrWhiteSpace(login.Password))
+        {
+            return BadRequest("Username and password are required.");
+        }
+
+        if (login.Username == "testuser" && login.Password == "password123")
         {
             var token = GenerateJwtToken(login.Username);
             return Ok(new { token });
@@ -43,7 +48,7 @@ public class AuthController : ControllerBase
             {
                 new Claim(ClaimTypes.Name, username)
             }),
-            Expires = DateTime.UtcNow.AddHours(24), // Öka till 24 timmar för att matcha din nya token
+            Expires = DateTime.UtcNow.AddHours(24), // 24 timmars utgångstid
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256),
             Issuer = _configuration["Jwt:Issuer"],
             Audience = _configuration["Jwt:Audience"]

@@ -19,14 +19,25 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+    public async Task<ActionResult<IEnumerable<object>>> GetBooks()
     {
-        return await _context.Books.ToListAsync();
+        var books = await _context.Books
+            .Select(b => new { b.Id, b.Title, b.Author, b.PublicationDate })
+            .ToListAsync();
+        if (books == null || !books.Any())
+        {
+            return NotFound("No books found in the database.");
+        }
+        return Ok(books);
     }
 
     [HttpPost]
     public async Task<ActionResult<Book>> PostBook(Book book)
     {
+        if (book == null)
+        {
+            return BadRequest("Book cannot be null.");
+        }
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetBooks), new { id = book.Id }, book);
