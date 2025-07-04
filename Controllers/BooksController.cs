@@ -31,6 +31,21 @@ public class BooksController : ControllerBase
         return Ok(books);
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Book>> GetBook(int id)
+    {
+        var book = await _context.Books
+            .Where(b => b.Id == id)
+            .Select(b => new { b.Id, b.Title, b.Author, b.PublicationDate })
+            .FirstOrDefaultAsync();
+
+        if (book == null)
+        {
+            return NotFound();
+        }
+        return Ok(book);
+    }
+
     [HttpPost]
     public async Task<ActionResult<Book>> PostBook(Book book)
     {
@@ -38,8 +53,24 @@ public class BooksController : ControllerBase
         {
             return BadRequest("Book cannot be null.");
         }
+        if (string.IsNullOrWhiteSpace(book.Title) || string.IsNullOrWhiteSpace(book.Author))
+        {
+            return BadRequest("Title and Author are required and cannot be empty.");
+        }
+        if (!book.PublicationDate.HasValue)
+        {
+            book.PublicationDate = DateTime.Now;
+        }
+
         _context.Books.Add(book);
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
         return CreatedAtAction(nameof(GetBooks), new { id = book.Id }, book);
     }
 
@@ -48,7 +79,7 @@ public class BooksController : ControllerBase
     {
         if (id != book.Id)
         {
-            return BadRequest();
+            return BadRequest("ID mismatch.");
         }
 
         var existingBook = await _context.Books.FindAsync(id);
@@ -59,7 +90,7 @@ public class BooksController : ControllerBase
 
         existingBook.Title = book.Title;
         existingBook.Author = book.Author;
-        existingBook.PublicationDate = book.PublicationDate;
+        existingBook.PublicationDate = book.PublicationDate ?? existingBook.PublicationDate;
 
         try
         {
@@ -87,7 +118,14 @@ public class BooksController : ControllerBase
         }
 
         _context.Books.Remove(book);
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
 
         return NoContent();
     }

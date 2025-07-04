@@ -6,7 +6,7 @@ using BookBase.Data;
 using BookBase.Models;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics; // Lägg till detta
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +43,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!)) // Null-forgiving operator
         };
         options.Events = new JwtBearerEvents
         {
@@ -75,7 +75,7 @@ app.UseExceptionHandler(errorApp =>
         {
             Error = errorMessage,
             StackTrace = exceptionHandlerPathFeature?.Error?.StackTrace ?? "No stack trace available"
-        }.ToString());
+        }.ToString() ?? "{}");
     });
 });
 
