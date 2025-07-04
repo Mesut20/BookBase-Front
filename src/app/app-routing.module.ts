@@ -1,26 +1,17 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './login/login';
-import { BookListComponent } from './book-list/book-list';
-import { QuotesComponent } from './quotes/quotes.component'; // Lägg till denna import
+import { Routes } from '@angular/router';
+import { LoginComponent } from './login/login.component';
+import { BookListComponent } from './book-list/book-list.component';
+import { QuotesComponent } from './quotes/quotes.component';
+import { BookFormComponent } from './book-form/book-form.component';
+import { authGuard } from './auth.guard'; // Importera guarden
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'books', component: BookListComponent },
-  { path: 'quotes', component: QuotesComponent }, // Nu är komponenten importerad
+  { path: 'books', component: BookListComponent, canActivate: [authGuard] },
+  { path: 'quotes', component: QuotesComponent, canActivate: [authGuard] },
+  { path: 'books/add', component: BookFormComponent, canActivate: [authGuard] },
+  { path: 'books/edit/:id', component: BookFormComponent, canActivate: [authGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {
-  // Exportera routes om det behövs i andra filer
-  static forRoot() {
-    return { ngModule: AppRoutingModule, providers: [] };
-  }
-}
-
-// Exportera routes separat om det används i app.config.ts eller main.ts
 export const appRoutes = routes;

@@ -1,0 +1,23 @@
+<h2>BookBase</h2>
+<h3>Böcker</h3>
+<h4>Mina citat</h4>
+<h5>Bok Lista</h5>
+<div *ngIf="loading" class="spinner-border text-primary" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+<button class="btn btn-primary mb-3" (click)="addBook()">Lägg till ny bok</button>
+<button class="btn btn-secondary mb-3 ms-2" (click)="toggleDarkMode()">{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</button>
+<ul class="list-group" *ngIf="!loading">
+  <li class="list-group-item" *ngFor="let book of books">
+    {{ book.title }} (Author: {{ book.author }})
+    <button class="btn btn-warning btn-sm float-end" (click)="editBook(book.id)" type="button">Redigera</button>
+    <button class="btn btn-danger btn-sm float-end me-2" (click)="deleteBook(book.id)" type="button">Radera</button>
+  </li>
+</ul>
+<button class="btn btn-secondary mt-3" (click)="fetchQuotes()">Visa Citat</button>
+<ul *ngIf="quotes.length > 0" class="list-group mt-3">
+  <li class="list-group-item" *ngFor="let quote of quotes">
+    {{ quote.quoteText }} (Author: {{ quote.author }}, Book ID: {{ quote.bookId }})
+  </li>
+</ul>
+<p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>

@@ -1,3 +1,24 @@
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+@media (max-width: 768px) {
+  .list-group-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .btn {
+    margin-top: 5px;
+  }
+}
+
+/* Globalt mörkt läge */
 body.dark-mode {
   background-color: #1a1a1a;
   color: #f0f0f0;
@@ -36,14 +57,4 @@ body.light-mode .btn {
 
 body.light-mode .btn:hover {
   background-color: #0056b3;
-}
-
-@media (max-width: 768px) {
-  .list-group-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .btn {
-    margin-top: 5px;
-  }
 }
