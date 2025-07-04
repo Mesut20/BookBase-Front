@@ -1,0 +1,72 @@
+# Authenticate to get a new token
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+GET http://localhost:5000/api/books
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzUxNTM1ODIzLCJleHAiOjE3NTE2MjIyMjMsImlhdCI6MTc1MTUzNTgyMywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.cVrcYkKHs4PfxbypMzEkkTEe44gJkmCC8uwrab916vk
+
+###
+
+GET http://localhost:5000/api/quotes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzUxNTM1ODIzLCJleHAiOjE3NTE2MjIyMjMsImlhdCI6MTc1MTUzNTgyMywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.cVrcYkKHs4PfxbypMzEkkTEe44gJkmCC8uwrab916vk
+
+###
+
+# Create a new book
+POST http://localhost:5000/api/books
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzUxNTM1ODIzLCJleHAiOjE3NTE2MjIyMjMsImlhdCI6MTc1MTUzNTgyMywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.cVrcYkKHs4PfxbypMzEkkTEe44gJkmCC8uwrab916vk
+
+{
+  "title": "Ny Testbok",
+  "author": "Ny Författare",
+  "publicationDate": "2025-01-01"
+}
+
+###
+
+# Create a new quote
+POST http://localhost:5000/api/quotes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzUxNTM1ODIzLCJleHAiOjE3NTE2MjIyMjMsImlhdCI6MTc1MTUzNTgyMywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.cVrcYkKHs4PfxbypMzEkkTEe44gJkmCC8uwrab916vk
+
+{
+  "quoteText": "Nytt citat",
+  "author": "Ny Författare",
+  "bookId": 1
+}
+
+###
+
+# Update a book
+PUT http://localhost:5000/api/books/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzUxNTM1ODIzLCJleHAiOjE3NTE2MjIyMjMsImlhdCI6MTc1MTUzNTgyMywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.cVrcYkKHs4PfxbypMzEkkTEe44gJkmCC8uwrab916vk
+
+{
+  "id": 1,
+  "title": "Uppdaterad Testbok 1 v2",
+  "author": "Uppdaterad Författare",
+  "publicationDate": "2025-01-02T00:00:00"
+}
+###
+# Delete a book
+DELETE http://localhost:5000/api/books/12
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzUxNTM1ODIzLCJleHAiOjE3NTE2MjIyMjMsImlhdCI6MTc1MTUzNTgyMywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.cVrcYkKHs4PfxbypMzEkkTEe44gJkmCC8uwrab916vk
+
+###
+
+# Delete a quote
+DELETE http://localhost:5000/api/quotes/8
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzUxNTM1ODIzLCJleHAiOjE3NTE2MjIyMjMsImlhdCI6MTc1MTUzNTgyMywiaXNzIjoiYm9va2Jhc2UtaXNzdWVyIiwiYXVkIjoiYm9va2Jhc2UtYXVkaWVuY2UifQ.cVrcYkKHs4PfxbypMzEkkTEe44gJkmCC8uwrab916vk
