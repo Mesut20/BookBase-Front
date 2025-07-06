@@ -4,6 +4,12 @@
   align-items: center;
 }
 
+.list-group-item .btn-container {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Skapar mellanrum mellan knappar */
+}
+
 .text-danger {
   color: #dc3545;
 }
@@ -13,8 +19,14 @@
     flex-direction: column;
     align-items: flex-start;
   }
+  .btn-container {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
   .btn {
     margin-top: 5px;
+    width: 100%; /* Gör knapparna full bredd på små skärmar */
   }
 }
 
@@ -29,16 +41,21 @@ body.dark-mode .list-group-item {
   border-color: #444;
 }
 
-body.dark-mode .btn {
-  background-color: #444;
+body.dark-mode .list-group-item .btn-primary {
+  background-color: #007bff;
   color: #f0f0f0;
-  border-color: #666;
+  border-color: #007bff;
 }
 
-body.dark-mode .btn:hover {
-  background-color: #555;
+body.dark-mode .list-group-item .btn-primary:hover {
+  background-color: #0056b3;
 }
 
+body.dark-mode .list-group-item .btn-container .btn-primary.btn-sm:not(:last-child) {
+  margin-right: 15px; /* Extra mellanrum för Redigera-knappen */
+}
+
+/* Globalt ljust läge */
 body.light-mode {
   background-color: #ffffff;
   color: #000000;
@@ -49,12 +66,16 @@ body.light-mode .list-group-item {
   border-color: #ddd;
 }
 
-body.light-mode .btn {
+body.light-mode .list-group-item .btn-primary {
   background-color: #007bff;
   color: #ffffff;
   border-color: #007bff;
 }
 
-body.light-mode .btn:hover {
+body.light-mode .list-group-item .btn-primary:hover {
   background-color: #0056b3;
+}
+
+body.light-mode .list-group-item .btn-container .btn-primary.btn-sm:not(:last-child) {
+  margin-right: 15px; /* Extra mellanrum för Redigera-knappen */
 }

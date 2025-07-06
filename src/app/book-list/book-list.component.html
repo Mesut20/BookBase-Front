@@ -1,23 +1,26 @@
-<h2>Böcker</h2>
-<h3>____________</h3>
-<h4></h4>
-<h5>Bok Lista</h5>
-<div *ngIf="loading" class="spinner-border text-primary" role="status">
-  <span class="visually-hidden">Loading...</span>
+<div class="container mt-4">
+  <h2>Böcker</h2>
+  <hr>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Bok Lista</h3>
+    <button class="btn btn-primary" (click)="toggleDarkMode()">{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</button>
+  </div>
+  <div *ngIf="loading" class="alert alert-info">Loading...</div>
+  <button class="btn btn-primary mb-3" (click)="addBook()">Lägg till ny bok</button>
+  <ul class="list-group">
+    <li class="list-group-item" *ngFor="let book of books">
+      {{ book.title }} (Author: {{ book.author }})
+      <div class="btn-container">
+        <button class="btn btn-primary btn-sm" (click)="editBook(book.id)">Redigera</button>
+        <button class="btn btn-primary btn-sm" (click)="deleteBook(book.id)">Radera</button>
+      </div>
+    </li>
+  </ul>
+  <button class="btn btn-primary mt-3" (click)="fetchQuotes()">Visa Citat</button>
+  <ul class="list-group mt-3" *ngIf="quotes.length > 0">
+    <li class="list-group-item" *ngFor="let quote of quotes">
+      {{ quote.quoteText }} (Author: {{ quote.author }}, Book ID: {{ quote.bookId }})
+    </li>
+  </ul>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 </div>
-<button class="btn btn-primary mb-3" (click)="addBook()">Lägg till ny bok</button>
-<button class="btn btn-secondary mb-3 ms-2" (click)="toggleDarkMode()">{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</button>
-<ul class="list-group" *ngIf="!loading">
-  <li class="list-group-item" *ngFor="let book of books">
-    {{ book.title }} (Author: {{ book.author }})
-    <button class="btn btn-warning btn-sm float-end" (click)="editBook(book.id)" type="button">Redigera</button>
-    <button class="btn btn-danger btn-sm float-end me-2" (click)="deleteBook(book.id)" type="button">Radera</button>
-  </li>
-</ul>
-<button class="btn btn-secondary mt-3" (click)="fetchQuotes()">Visa Citat</button>
-<ul *ngIf="quotes.length > 0" class="list-group mt-3">
-  <li class="list-group-item" *ngFor="let quote of quotes">
-    {{ quote.quoteText }} (Author: {{ quote.author }}, Book ID: {{ quote.bookId }})
-  </li>
-</ul>
-<p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
