@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Quote, Book } from '../models';
+import { QuoteService } from '../quote.service';
+import { BookService } from '../book.service';
 import { Router } from '@angular/router';
-import { Quote } from '../models';
-import { Book } from '../models';
 
 @Component({
   selector: 'app-quotes',
@@ -21,7 +21,7 @@ export class QuotesComponent implements OnInit {
   loading: boolean = false;
   isDarkMode: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private quoteService: QuoteService, private bookService: BookService, private router: Router) {}
 
   ngOnInit() {
     this.fetchQuotes();
@@ -37,15 +37,16 @@ export class QuotesComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.http.get<Quote[]>('http://localhost:5000/api/quotes', {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: (response) => {
+    this.quoteService.getQuotes().subscribe({
+      next: (response: Quote[]) => {
         this.quotes = response;
         this.loading = false;
+        if (!response.length) {
+          this.errorMessage = 'No quotes found. Add a new quote to get started!';
+        }
       },
-      error: (err) => {
-        this.errorMessage = 'Failed to load quotes';
+      error: (err: any) => {
+        this.errorMessage = err.status === 404 ? 'No quotes found. Add a new quote to get started!' : 'Failed to load quotes';
         this.loading = false;
         console.error('Error fetching quotes:', err);
       }
@@ -59,15 +60,16 @@ export class QuotesComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.http.get<Book[]>('http://localhost:5000/api/books', {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: (response) => {
+    this.bookService.getBooks().subscribe({
+      next: (response: Book[]) => {
         this.books = response;
         this.loading = false;
+        if (!response.length) {
+          this.errorMessage = 'No books found. Add a book first!';
+        }
       },
-      error: (err) => {
-        this.errorMessage = 'Failed to fetch books';
+      error: (err: any) => {
+        this.errorMessage = err.status === 404 ? 'No books found. Add a book first!' : 'Failed to fetch books';
         this.loading = false;
         console.error('Error fetching books:', err);
       }
@@ -80,17 +82,19 @@ export class QuotesComponent implements OnInit {
       this.errorMessage = 'Please log in to add quote';
       return;
     }
+    if (!this.newQuote.quoteText || !this.newQuote.author || !this.newQuote.bookId) {
+      this.errorMessage = 'Quote text, author, and book ID are required';
+      return;
+    }
     this.loading = true;
-    this.http.post<Quote>('http://localhost:5000/api/quotes', this.newQuote, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: (response) => {
+    this.quoteService.addQuote(this.newQuote).subscribe({
+      next: (response: Quote) => {
         this.quotes.push(response);
         this.newQuote = { id: 0, quoteText: '', author: '', bookId: 0 };
         this.loading = false;
         this.errorMessage = '';
       },
-      error: (err) => {
+      error: (err: any) => {
         this.errorMessage = 'Failed to add quote: ' + (err.error?.message || err.statusText);
         this.loading = false;
         console.error('Error adding quote:', err);
@@ -105,15 +109,13 @@ export class QuotesComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.http.delete(`http://localhost:5000/api/quotes/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
+    this.quoteService.deleteQuote(id).subscribe({
       next: () => {
         this.quotes = this.quotes.filter(q => q.id !== id);
         this.loading = false;
         this.errorMessage = '';
       },
-      error: (err) => {
+      error: (err: any) => {
         this.errorMessage = 'Failed to delete quote: ' + (err.error?.message || err.statusText);
         this.loading = false;
         console.error('Error deleting quote:', err);
@@ -124,7 +126,7 @@ export class QuotesComponent implements OnInit {
   toggleDarkMode() {
     this.isDarkMode = !this.isDarkMode;
     this.applyDarkMode();
-    console.log('Toggling to', this.isDarkMode ? 'dark-mode' : 'light-mode'); // Felsökningslogg
+    console.log('Toggling to', this.isDarkMode ? 'dark-mode' : 'light-mode');
     localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
   }
 

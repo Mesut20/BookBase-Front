@@ -1,4 +1,31 @@
 :host {
   display: block;
-  padding: 10px;
+  padding: 0;
+}
+
+.navbar {
+  background-color: #007bff; /* Blå bakgrund */
+}
+
+.bookbase-title {
+  font-size: 2rem; /* Större text för BookBase */
+  color: #ffffff !important; /* Vit text */
+  font-weight: bold;
+}
+
+.nav-link {
+  color: #ffffff !important; /* Vit text för navigeringslänkar */
+}
+
+.nav-link:hover {
+  color: #e0e0e0 !important; /* Ljusgrå vid hover */
+}
+
+.nav-link.active {
+  font-weight: bold;
+  color: #ffffff !important;
+}
+
+.navbar-toggler-icon {
+  filter: invert(1); /* Gör toggler-ikonen vit för kontrast */
 }

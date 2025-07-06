@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Book, Quote } from '../models';
+import { BookService } from '../book.service';
+import { QuoteService } from '../quote.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-book-list',
@@ -18,7 +19,7 @@ export class BookListComponent implements OnInit {
   isDarkMode: boolean = false;
   loading: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private bookService: BookService, private quoteService: QuoteService, private router: Router) {}
 
   ngOnInit() {
     this.fetchBooks();
@@ -32,15 +33,16 @@ export class BookListComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.http.get<Book[]>('http://localhost:5000/api/books', {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: (response) => {
-        this.books = response.map(book => ({ ...book, id: book.id || 0 })); // Säkerställ att id finns
+    this.bookService.getBooks().subscribe({
+      next: (response: Book[]) => {
+        this.books = response.map(book => ({ ...book, id: book.id || 0 }));
         this.loading = false;
+        if (!response.length) {
+          this.errorMessage = 'No books found. Add a new book to get started!';
+        }
       },
-      error: (err) => {
-        this.errorMessage = 'Failed to load books';
+      error: (err: any) => {
+        this.errorMessage = err.status === 404 ? 'No books found. Add a new book to get started!' : 'Failed to load books';
         this.loading = false;
         console.error('Error fetching books:', err);
       }
@@ -54,15 +56,13 @@ export class BookListComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.http.get<Quote[]>('http://localhost:5000/api/quotes', {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: (response) => {
+    this.quoteService.getQuotes().subscribe({
+      next: (response: Quote[]) => {
         this.quotes = response;
         this.loading = false;
       },
-      error: (err) => {
-        this.errorMessage = 'Failed to load quotes';
+      error: (err: any) => {
+        this.errorMessage = err.status === 404 ? 'No quotes found.' : 'Failed to load quotes';
         this.loading = false;
         console.error('Error fetching quotes:', err);
       }
@@ -74,7 +74,7 @@ export class BookListComponent implements OnInit {
   }
 
   editBook(id: number) {
-    console.log('Edit clicked for book ID:', id); // Felsökningslogg
+    console.log('Edit clicked for book ID:', id);
     if (!id) {
       console.error('Invalid book ID:', id);
       return;
@@ -83,7 +83,7 @@ export class BookListComponent implements OnInit {
   }
 
   deleteBook(id: number) {
-    console.log('Delete clicked for book ID:', id); // Felsökningslogg
+    console.log('Delete clicked for book ID:', id);
     if (!id) {
       console.error('Invalid book ID:', id);
       return;
@@ -94,19 +94,17 @@ export class BookListComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.http.delete(`http://localhost:5000/api/books/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe(
-      () => {
+    this.bookService.deleteBook(id).subscribe({
+      next: () => {
         this.books = this.books.filter(b => b.id !== id);
         this.loading = false;
       },
-      error => {
-        this.errorMessage = 'Failed to delete book: ' + (error.error?.message || error.statusText);
+      error: (err: any) => {
+        this.errorMessage = 'Failed to delete book: ' + (err.error?.message || err.statusText);
         this.loading = false;
-        console.error('Error deleting book:', error);
+        console.error('Error deleting book:', err);
       }
-    );
+    });
   }
 
   logout() {

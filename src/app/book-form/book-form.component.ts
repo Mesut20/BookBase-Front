@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Book } from '../models';
+import { BookService } from '../book.service';
 
 @Component({
   selector: 'app-book-form',
@@ -10,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="container mt-4">
-      <h2>{{editMode ? 'Edit Book' : 'Add Book'}}</h2>
+      <h2>{{ editMode ? 'Edit Book' : 'Add Book' }}</h2>
       <form (ngSubmit)="onSubmit()" #bookForm="ngForm">
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
@@ -20,7 +21,11 @@ import { ActivatedRoute, Router } from '@angular/router';
           <label for="author" class="form-label">Author</label>
           <input type="text" class="form-control" id="author" [(ngModel)]="book.author" name="author" required>
         </div>
-        <div *ngIf="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
+        <div class="mb-3">
+          <label for="publicationDate" class="form-label">Publication Date</label>
+          <input type="date" class="form-control" id="publicationDate" [(ngModel)]="publicationDate" name="publicationDate">
+        </div>
+        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
         <button type="submit" class="btn btn-primary" [disabled]="!bookForm.valid || !book.title || !book.author">Save</button>
         <button type="button" class="btn btn-secondary ms-2" (click)="onCancel()">Cancel</button>
       </form>
@@ -29,11 +34,12 @@ import { ActivatedRoute, Router } from '@angular/router';
   styles: []
 })
 export class BookFormComponent implements OnInit {
-  book = { id: 0, title: '', author: '' };
+  book: Book = { id: 0, title: '', author: '', publicationDate: undefined };
+  publicationDate: string | undefined = undefined;
   editMode = false;
   errorMessage: string = '';
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {}
+  constructor(private bookService: BookService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -50,11 +56,17 @@ export class BookFormComponent implements OnInit {
       this.errorMessage = 'Please log in to load book';
       return;
     }
-    this.http.get<any>(`http://localhost:5000/api/books/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: (response) => this.book = response,
-      error: (err) => {
+    this.bookService.getBooks().subscribe({
+      next: (books: Book[]) => {
+        const book = books.find(b => b.id === id);
+        if (book) {
+          this.book = book;
+          this.publicationDate = book.publicationDate ? new Date(book.publicationDate).toISOString().split('T')[0] : undefined;
+        } else {
+          this.errorMessage = 'Book not found';
+        }
+      },
+      error: (err: any) => {
         this.errorMessage = 'Failed to load book';
         console.error('Error loading book:', err);
       }
@@ -62,30 +74,35 @@ export class BookFormComponent implements OnInit {
   }
 
   onSubmit() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      this.errorMessage = 'Please log in to save book';
-      return;
-    }
     if (!this.book.title || !this.book.author) {
       this.errorMessage = 'Title and Author are required';
       return;
     }
-    console.log('Sending book data:', this.book); // Lägg till loggning för felsökning
-    const url = this.editMode ? `http://localhost:5000/api/books/${this.book.id}` : 'http://localhost:5000/api/books';
-    const method = this.editMode ? this.http.put : this.http.post;
-    method.call(this.http, url, this.book, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: () => {
-        this.errorMessage = '';
-        this.router.navigate(['/books']);
-      },
-      error: (err) => {
-        this.errorMessage = 'Failed to save book: ' + (err.error?.message || err.statusText || 'Unknown error');
-        console.error('Error saving book:', err);
-      }
-    });
+    this.book.publicationDate = this.publicationDate ? new Date(this.publicationDate) : undefined;
+    console.log('Sending book data:', this.book);
+    if (this.editMode) {
+      this.bookService.updateBook(this.book.id, this.book).subscribe({
+        next: () => {
+          this.errorMessage = '';
+          this.router.navigate(['/books']);
+        },
+        error: (err: any) => {
+          this.errorMessage = 'Failed to save book: ' + (err.error?.message || err.statusText || 'Unknown error');
+          console.error('Error saving book:', err);
+        }
+      });
+    } else {
+      this.bookService.addBook(this.book).subscribe({
+        next: (response: Book) => {
+          this.errorMessage = '';
+          this.router.navigate(['/books']);
+        },
+        error: (err: any) => {
+          this.errorMessage = 'Failed to save book: ' + (err.error?.message || err.statusText || 'Unknown error');
+          console.error('Error saving book:', err);
+        }
+      });
+    }
   }
 
   onCancel() {
