@@ -1,22 +1,22 @@
 <div class="container mt-4">
-  <h2>Böcker</h2>
+  <h2>Books</h2>
   <hr>
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>Bok Lista</h3>
+    <h3>Book List</h3>
     <button class="btn btn-primary" (click)="toggleDarkMode()">{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</button>
   </div>
   <div *ngIf="loading" class="alert alert-info">Loading...</div>
-  <button class="btn btn-primary mb-3" (click)="addBook()">Lägg till ny bok</button>
+  <button class="btn btn-primary mb-3" (click)="addBook()">Add Books</button>
   <ul class="list-group">
     <li class="list-group-item" *ngFor="let book of books">
       {{ book.title }} (Author: {{ book.author }})
       <div class="btn-container">
-        <button class="btn btn-primary btn-sm" (click)="editBook(book.id)">Redigera</button>
-        <button class="btn btn-primary btn-sm" (click)="deleteBook(book.id)">Radera</button>
+        <button class="btn btn-primary btn-sm" (click)="editBook(book.id)">Edit</button>
+        <button class="btn btn-primary btn-sm" (click)="deleteBook(book.id)">Delete</button>
       </div>
     </li>
   </ul>
-  <button class="btn btn-primary mt-3" (click)="fetchQuotes()">Visa Citat</button>
+  <button class="btn btn-primary mt-3" (click)="fetchQuotes()">Show Quotes</button>
   <ul class="list-group mt-3" *ngIf="quotes.length > 0">
     <li class="list-group-item" *ngFor="let quote of quotes">
       {{ quote.quoteText }} (Author: {{ quote.author }}, Book ID: {{ quote.bookId }})
